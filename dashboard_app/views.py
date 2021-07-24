@@ -27,6 +27,14 @@ def user_admin_page(request):
 
         return render(request, 'all_users.html')
 
+def admin_edit_page(request, id):
+    if request.session['user_id'] == id:
+        context = {
+            'admin': User.objects.get(id=id)
+        }
+        return render(request, 'edit_user.html', context)
+    return redirect('/dashboard/admin')
+
 def register_admin(request):
     if request.method == 'POST':
         errors = User.objects.register_validator(request.POST)
@@ -75,6 +83,9 @@ def login_proccess(request):
         return redirect('/login')
     messages.error(request, 'Invalid email or password')   
     return redirect('/login')
+
+def add_user_proccess(request):
+    pass
 
 def logout(request):
     request.session.flush()
