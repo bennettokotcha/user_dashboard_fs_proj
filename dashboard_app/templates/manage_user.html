@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-secondary mb-4 text-light">
         <div class="container-fluid">
-            <a class="navbar-brand ms-2" href="/">User-Dashboard</a>
+            <a class="navbar-brand ms-2 fw-bold" href="/">User-Dashboard</a>
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#">Home</a>
@@ -23,10 +23,13 @@
                     <a class="nav-link active" href="/dashboard/admin">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link" href="/users/edit/{{request.session.user_id}}">Profile</a>
                 </li>
             </ul>
-            <a href="/logout" class="me-4 text-white">Log-Off</a>
+            <p class="mt-2">
+                Welcome, {{request.session.user_name}}  |   
+                <a href="/logout" class="me-4 text-white">Log-Off</a>
+            </p>
         </div>
     </nav>
     <div class="container d-flex justify-content-between bg-light mb-3">
@@ -34,7 +37,7 @@
         <a class="btn btn-primary rounded mt-5" href="/user/new" role="button" style="height: fit-content;">Add New</a>
     </div>
         <br>
-        <img style="height: 400px;" class="container col-6 d-flex" src="{% static 'manage_users_pic.jpeg' %}" alt="pic of managing people">
+        <img style="height: 400px;" class="container col-8 d-flex" src="{% static 'manage_users_pic.jpeg' %}" alt="pic of managing people">
         <table class="container mt-5 table table-striped table-hover bg-light">
             <thead>
                 <tr>
@@ -49,20 +52,20 @@
             <tbody>
                 {% for user in all_users %}
                 <tr>
-                    <th scope="row">1</th>
+                    <th scope="row">{{user.id}}</th>
                     <td> 
-                        <a href="#">{{user.first_name}} {{user.last_name}}</a>
+                        <a href="/users/edit/{{user.id}}">{{user.first_name}} {{user.last_name}}</a>
                     </td>
                     <td>{{user.email}}</td>
                     <td>{{user.created_at}}</td>
-                    {% if user.user_level is True %}
+                    {% if user.user_level is False %}
                     <td>Admin</td>
                     {% else %}
                     <td>Normal</td>
                     {% endif %}
                     <td>
                         <a href="/admin/edit/{{user.id}}">Edit</a> |
-                        <a href="#">Remove</a>
+                        <a href="/user/remove/{{user.id}}">Remove</a>
                     </td>
                 </tr>
                 {% endfor %}

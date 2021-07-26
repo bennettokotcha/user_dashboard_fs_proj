@@ -23,7 +23,10 @@
                     <a class="nav-link active" href="#">Profile</a>
                 </li>
             </ul>
-            <a href="#" class="me-4 text-white">Log-Off</a>
+            <p class="mt-2">
+                Welcome, {{request.session.user_name}}  |   
+                <a href="/logout" class="me-4 text-white">Log-Off</a>
+            </p>
         </div>
     </nav>
     <div class="container mt-5 bg-light rounded">

@@ -17,18 +17,30 @@ def add_user_page(request):
 
 def user_admin_page(request):
     user = User.objects.get(id=request.session['user_id'])
-    if user.user_level is True: 
+    if user.user_level is True:
         context = {
             'all_users': User.objects.all(),
-            # 'admin': User.objects.get(id=request.session['admin_id'])
+        }
+        return render(request, 'all_users.html', context) 
+    else:
+        context = {
+            'all_users': User.objects.all(),
         }
         return render(request, 'manage_user.html', context)
-    else:
 
-        return render(request, 'all_users.html')
+def user_edit_page(request, id):
+    if request.session['user_id'] == id:
+        context = {
+            'user': User.objects.get(id=id)
+        } 
+        return render(request, 'edit_profile.html', context)
+    return redirect('/dashboard/admin')
 
 def admin_edit_page(request, id):
-    if request.session['user_id'] == id:
+    user1 = User.objects.get(id=id)
+    print(user1.user_level, user1.first_name)
+    users = User.objects.all()    
+    if request.session['user_id'] == id or user1.user_level is True:
         context = {
             'admin': User.objects.get(id=id)
         }
@@ -51,16 +63,16 @@ def register_admin(request):
             pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
             print(pw_hash)
 
-            admin_user = User.objects.create(
+            user = User.objects.create(
                 first_name=request.POST['first_name'], 
                 last_name=request.POST['last_name'],
                 email=request.POST['email'],
-                user_level=True,
+                user_level=False,
                 password=pw_hash,
                 confirm_pw=request.POST['confirm_pw']
                 )
-            request.session['user_id'] = admin_user.id
-            request.session['user_name']= admin_user.first_name
+            request.session['user_id'] = user.id
+            request.session['user_name']= user.first_name
         return redirect('/dashboard/admin')
 
 def login_proccess(request):
@@ -85,7 +97,72 @@ def login_proccess(request):
     return redirect('/login')
 
 def add_user_proccess(request):
-    pass
+    if request.method == 'POST':
+        errors = User.objects.register_validator(request.POST)
+        user = User.objects.filter(email = request.POST['email'])
+        if user:
+            messages.error(request, 'Email already exist, please register with a different email address!')
+            return redirect('/user/new')
+        if len(errors) > 0 :
+            for k, v in errors.items():
+                messages.error(request, v)#extra_tags=key
+            return redirect('/user/new')
+        else:
+            password = request.POST['password']
+            pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+            print(pw_hash)
+    
+    added_user = User.objects.create(
+        first_name=request.POST['first_name'],
+        last_name=request.POST['last_name'],
+        email=request.POST['email'],
+        user_level=True,
+        password=pw_hash,
+        confirm_pw=request.POST['confirm_pw']
+    )
+    return redirect('/dashboard/admin')
+
+def edit_info_proccess(request, id):
+    if request.method == 'POST':
+        this_user = User.objects.get(id=id)
+        errors = User.objects.profile_edit_validator(request.POST)
+        if not request.POST['email'] == this_user.email:
+            user = User.objects.filter(email = request.POST['email'])
+            if user:
+                messages.error(request, 'Email already exist, please register with a different email address!')
+                return redirect(f'/users/edit/{id}')
+        if len(errors) > 0 :
+            for k, v in errors.items():
+                messages.error(request, v)#extra_tags=key
+            return redirect(f'/users/edit/{id}')
+        # #     else:
+        if 'password' in request.POST:
+            password = request.POST['password']
+            pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+            print(pw_hash)
+            this_user.password = pw_hash
+            this_user.confirm_pw = request.POST['confirm_pw']
+            this_user.save()
+            return redirect('/dashboard/admin')
+
+        # if 'desc' in request.POST:
+        #     this_user.desc = request.POST['desc']
+        #     this_user.save()
+        #     return redirect('/dashboard/admin')
+
+        this_user = User.objects.get(id=id)
+        this_user.first_name = request.POST['first_name']
+        this_user.last_name = request.POST['last_name']
+        this_user.email = request.POST['email']
+        this_user.save()
+        return redirect('/dashboard/admin')
+    return redirect('/')
+
+def remove_user(request, number):
+    if request.method=='GET':
+        user = User.objects.get(id=number)
+        user.delete()
+        return redirect('/dashboard/admin')
 
 def logout(request):
     request.session.flush()
