@@ -13,7 +13,11 @@ urlpatterns = [
     path('admin/edit/<int:id>', views.admin_edit_page),
     path('add-user/proccess', views.add_user_proccess),
     path('users/edit/<int:id>', views.user_edit_page),
-    path('edit/<int:id>/proccess', views.edit_info_proccess),
+    path('users/show/<int:id>', views.posts_page),
+    path('edit-i/<int:id>/proccess', views.edit_info_proccess),
+    path('edit-p/<int:id>/proccess', views.edit_password_proccess),
+    path('edit-d/<int:id>/proccess', views.edit_desc_proccess),
+    path('edit-user-i/<int:id>/process', views.edit_userinfo_proccess),
     path('user/remove/<int:number>', views.remove_user),
     path('logout', views.logout),
 ]

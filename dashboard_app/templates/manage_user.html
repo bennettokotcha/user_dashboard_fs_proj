@@ -17,9 +17,6 @@
             <a class="navbar-brand ms-2 fw-bold" href="/">User-Dashboard</a>
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link active" href="/dashboard/admin">Dashboard</a>
                 </li>
                 <li class="nav-item">
@@ -32,6 +29,16 @@
             </p>
         </div>
     </nav>
+    <p class="container border border-1 border-success text-success p-2">
+        <span class="fw-bold">Manage users:</span>
+        <span class="fst-italic fw-lighter">(Only Admin will render this page with the GET request.)</span> | 
+        On this page the Admin-user will be
+        able to reach a page to edit (Normal-Users)
+        Also, like Normal-users, Admin-user will be able to visit
+        the any users-post/comment-page. Admin can also edit themselves.
+        Admin can add a new-Normal-user upon creation with the
+        ability to make them an admin user. An Admin cannot edit another admin.
+    </p>
     <div class="container d-flex justify-content-between bg-light mb-3">
         <h1 class="mt-5">Manage Users</h1>
         <a class="btn btn-primary rounded mt-5" href="/user/new" role="button" style="height: fit-content;">Add New</a>
@@ -54,7 +61,7 @@
                 <tr>
                     <th scope="row">{{user.id}}</th>
                     <td> 
-                        <a href="/users/edit/{{user.id}}">{{user.first_name}} {{user.last_name}}</a>
+                        <a href="/users/show/{{user.id}}">{{user.first_name}} {{user.last_name}}</a>
                     </td>
                     <td>{{user.email}}</td>
                     <td>{{user.created_at}}</td>

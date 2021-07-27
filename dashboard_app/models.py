@@ -26,7 +26,7 @@ class UserManager(models.Manager):
             errors['password'] = 'Provided PASSWORD must be at least 8 characters.'
         return errors
 
-    def profile_edit_validator(self, postData):
+    def info_edit_validator(self, postData):
         errors = {}
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
         if not EMAIL_REGEX.match(postData['email']):
@@ -37,12 +37,20 @@ class UserManager(models.Manager):
             errors['last_name'] = 'Provided LAST NAME must be at least 2 characters.'
         if not EMAIL_REGEX.match(postData['email']):
             errors['email'] = "Invalid email address."
+        # if len(postData['password']) < 8:
+        #     errors['password'] = 'Provided PASSWORD must be at least 8 characters.'
+        # if postData['confirm_pw'] != postData['password']:
+        #     errors['confirm_pw'] = 'Passwords do not match!'
+        return errors
+
+    def password_edit_validator(self, postData):
+        errors = {}
         if len(postData['password']) < 8:
             errors['password'] = 'Provided PASSWORD must be at least 8 characters.'
         if postData['confirm_pw'] != postData['password']:
             errors['confirm_pw'] = 'Passwords do not match!'
         return errors
-        
+    
 
     #users_created = []
 
@@ -50,6 +58,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.CharField(max_length=275)
+    desc = models.CharField(max_length=300, null=True)
     user_level = models.BooleanField()
     password = models.CharField(max_length=75)
     confirm_pw = models.CharField(max_length=75)

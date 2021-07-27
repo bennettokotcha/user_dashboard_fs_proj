@@ -47,6 +47,13 @@ def admin_edit_page(request, id):
         return render(request, 'edit_user.html', context)
     return redirect('/dashboard/admin')
 
+def posts_page(request, id):
+    show_user = User.objects.get(id=id)
+    context = {
+        'show_user' : User.objects.get(id=id)
+    }
+    return render(request, 'posts.html', context)
+
 def register_admin(request):
     if request.method == 'POST':
         errors = User.objects.register_validator(request.POST)
@@ -125,7 +132,7 @@ def add_user_proccess(request):
 def edit_info_proccess(request, id):
     if request.method == 'POST':
         this_user = User.objects.get(id=id)
-        errors = User.objects.profile_edit_validator(request.POST)
+        errors = User.objects.info_edit_validator(request.POST)
         if not request.POST['email'] == this_user.email:
             user = User.objects.filter(email = request.POST['email'])
             if user:
@@ -135,21 +142,6 @@ def edit_info_proccess(request, id):
             for k, v in errors.items():
                 messages.error(request, v)#extra_tags=key
             return redirect(f'/users/edit/{id}')
-        # #     else:
-        if 'password' in request.POST:
-            password = request.POST['password']
-            pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
-            print(pw_hash)
-            this_user.password = pw_hash
-            this_user.confirm_pw = request.POST['confirm_pw']
-            this_user.save()
-            return redirect('/dashboard/admin')
-
-        # if 'desc' in request.POST:
-        #     this_user.desc = request.POST['desc']
-        #     this_user.save()
-        #     return redirect('/dashboard/admin')
-
         this_user = User.objects.get(id=id)
         this_user.first_name = request.POST['first_name']
         this_user.last_name = request.POST['last_name']
@@ -158,11 +150,47 @@ def edit_info_proccess(request, id):
         return redirect('/dashboard/admin')
     return redirect('/')
 
+def edit_password_proccess(request, id):
+    if request.method == 'POST':
+        this_user = User.objects.get(id=id)
+        errors = User.objects.password_edit_validator(request.POST)
+        if len(errors) > 0 :
+            for k, v in errors.items():
+                messages.error(request, v)#extra_tags=key
+            return redirect(f'/users/edit/{id}')
+
+        password = request.POST['password']
+        pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        print(pw_hash)
+        this_user.password = pw_hash
+        this_user.confirm_pw = request.POST['confirm_pw']
+        this_user.save()
+        return redirect('/dashboard/admin')
+    return redirect('/')
+
+def edit_desc_proccess(request, id):
+    if request.method == 'POST':
+        this_user = User.objects.get(id=id)
+        this_user.desc = request.POST['desc']
+        this_user.save()
+        return redirect('/dashboard/admin')
+
+def edit_userinfo_proccess(request, id):
+    this_user = User.objects.get(id=id)
+    this_user.first_name =  request.POST['first_name']
+    this_user.last_name = request.POST['last_name']
+    this_user.user_level = request.POST['user_level']
+    this_user.email = request.POST['email']
+    this_user.save()
+    return redirect('/dashboard/admin')
+
+
 def remove_user(request, number):
     if request.method=='GET':
         user = User.objects.get(id=number)
         user.delete()
         return redirect('/dashboard/admin')
+    return redirect('/')
 
 def logout(request):
     request.session.flush()

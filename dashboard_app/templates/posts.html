@@ -11,16 +11,13 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-secondary mb-4 text-light">
         <div class="container-fluid">
-            <a class="navbar-brand ms-2" href="#">User-Dashboard</a>
+            <a class="navbar-brand fw-bold" href="/">User-Dashboard</a>
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="/dashboard/admin">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Profile</a>
+                    <a class="nav-link" href="/users/edit/{{request.session.user_id}}">Profile</a>
                 </li>
             </ul>
             <p class="mt-2">
@@ -30,16 +27,16 @@
         </div>
     </nav>
     <div class="container mt-5 bg-light rounded">
-        <h1>{{first name}}{{last name}}</h1>
-        <p>Registered at:</p>
-        <p>User ID:</p>
-        <p>Email address:</p>
-        <p>Description:</p>
+        <h1 class="mb-3">{{show_user.first_name}} {{show_user.last_name}}</h1>
+        <p class="p-2 mb-2 fst-italic">Registered at: <span class="fst-normal fw-bold">{{show_user.created_at}}</span></p>
+        <p class="p-2 mb-2 fst-italic">User ID: <span class="fst-normal fw-bold">{{show_user.id}}</span></p>
+        <p class="p-2 mb-2 fst-italic">Email address: <span class="fst-normal fw-bold">{{show_user.email}}</span></p>
+        <p class="p-2 mb-2 fst-italic">Description: <span class="fs-5">{{show_user.desc}}</span></p>
     </div>
     
     <div class="container bg-dark text-white rounded p-5 mt-4">
         <label for="post" class="form-label">
-            <h2>Leave a message for {{first_name}}</h2>
+            <h2>Leave a message for {{show_user.first_name}}: </h2>
         </label>
         <input type="text" class="form-control" name="post">
     
