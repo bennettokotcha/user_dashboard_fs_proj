@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import User
+from .models import User, Post, Comment
 from django.contrib import messages
 import bcrypt
 
@@ -38,11 +38,11 @@ def user_edit_page(request, id):
 
 def admin_edit_page(request, id):
     user1 = User.objects.get(id=id)
-    print(user1.user_level, user1.first_name)
+    # print(user1.user_level, user1.first_name)
     users = User.objects.all()    
     if request.session['user_id'] == id or user1.user_level is True:
         context = {
-            'admin': User.objects.get(id=id)
+            'user': User.objects.get(id=id)
         }
         return render(request, 'edit_user.html', context)
     return redirect('/dashboard/admin')
@@ -50,7 +50,10 @@ def admin_edit_page(request, id):
 def posts_page(request, id):
     show_user = User.objects.get(id=id)
     context = {
-        'show_user' : User.objects.get(id=id)
+        'show_user' : User.objects.get(id=id),
+        'show_user_posts' : show_user.posts_made.all(),
+        'all_posts' : Post.objects.all(),
+        'logged_user' : User.objects.get(id=request.session['user_id']),
     }
     return render(request, 'posts.html', context)
 
@@ -175,14 +178,59 @@ def edit_desc_proccess(request, id):
         this_user.save()
         return redirect('/dashboard/admin')
 
-def edit_userinfo_proccess(request, id):
-    this_user = User.objects.get(id=id)
-    this_user.first_name =  request.POST['first_name']
-    this_user.last_name = request.POST['last_name']
-    this_user.user_level = request.POST['user_level']
-    this_user.email = request.POST['email']
-    this_user.save()
-    return redirect('/dashboard/admin')
+def edit_user_info(request, id):
+    if request.method == 'POST':
+        this_user = User.objects.get(id=id)
+        errors = User.objects.info_edit_validator(request.POST)
+        if not request.POST['email'] == this_user.email:
+            user = User.objects.filter(email = request.POST['email'])
+            if user:
+                messages.error(request, 'Email already exist, please register with a different email address!')
+                return redirect(f'/admin/edit/{id}')
+        if len(errors) > 0 :
+            for k, v in errors.items():
+                messages.error(request, v)#extra_tags=key
+            return redirect(f'/admin/edit/{id}')
+        this_user = User.objects.get(id=id)
+        this_user.first_name =  request.POST['first_name']
+        this_user.last_name = request.POST['last_name']
+        this_user.user_level = request.POST['user_level']
+        this_user.email = request.POST['email']
+        this_user.save()
+        return redirect('/dashboard/admin')
+
+def edit_user_password(request, id):
+    if request.method == 'POST':
+        this_user = User.objects.get(id=id)
+        errors = User.objects.password_edit_validator(request.POST)
+        if len(errors) > 0 :
+            for k, v in errors.items():
+                messages.error(request, v)#extra_tags=key
+            return redirect(f'/admin/edit/{id}')
+
+        password = request.POST['password']
+        pw_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+        print(pw_hash)
+        this_user.password = pw_hash
+        this_user.confirm_pw = request.POST['confirm_pw']
+        this_user.save()
+        return redirect('/dashboard/admin')
+    return redirect('/')
+
+def add_post_user(request, id):
+    #add a post to user
+    if request.method == 'POST':
+        show_user = User.objects.get(id=id)
+        num = request.session['user_id']
+        logged_user = User.objects.get(id = num)
+        create_post = Post.objects.create(
+            added_to= show_user,
+            posted_by= logged_user,
+            message=request.POST['message'],
+        )
+        logged_user.posts_made.add(create_post)
+        show_user.added_posts.add(create_post)
+        return redirect(f'/users/show/{id}')
 
 
 def remove_user(request, number):

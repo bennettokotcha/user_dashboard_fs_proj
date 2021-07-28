@@ -28,20 +28,30 @@
     </nav>
     <div class="container mt-5 bg-light rounded">
         <h1 class="mb-3">{{show_user.first_name}} {{show_user.last_name}}</h1>
-        <p class="p-2 mb-2 fst-italic">Registered at: <span class="fst-normal fw-bold">{{show_user.created_at}}</span></p>
-        <p class="p-2 mb-2 fst-italic">User ID: <span class="fst-normal fw-bold">{{show_user.id}}</span></p>
-        <p class="p-2 mb-2 fst-italic">Email address: <span class="fst-normal fw-bold">{{show_user.email}}</span></p>
-        <p class="p-2 mb-2 fst-italic">Description: <span class="fs-5">{{show_user.desc}}</span></p>
+        <p class="p-2 mb-2 fst-italic text-primary">Registered at: <span class="fst-normal  text-dark fw-bold">{{show_user.created_at}}</span></p>
+        <p class="p-2 mb-2 fst-italic text-primary">User ID: <span class="fst-normal  text-dark fw-bold">{{show_user.id}}</span></p>
+        <p class="p-2 mb-2 fst-italic text-primary">Email address: <span class="fst-normal  text-dark fw-bold">{{show_user.email}}</span></p>
+        <p class="p-2 mb-2 fst-italic text-primary">Description: <span class="fs-4  text-dark">{{show_user.desc}}</span></p>
     </div>
     
-    <div class="container bg-dark text-white rounded p-5 mt-4">
-        <label for="post" class="form-label">
+    <form action="/add-post/{{show_user.id}}" method="POST" class="container bg-dark text-white rounded p-5 mt-4">
+        {% csrf_token %}
+        <label for="message" class="form-label">
             <h2>Leave a message for {{show_user.first_name}}: </h2>
         </label>
-        <input type="text" class="form-control" name="post">
+        <input type="text" class="form-control" name="message">
     
-        <div type="submit" class="container mt-3 mb-5 btn-success text-center col-1 p-2 rounded me-5">Post</div>
-    </div>
-    
-</body>
+        <button type="submit" class="container mt-3 mb-5 btn-success text-center col-1 p-2 rounded me-5">Post</button>
+    </form>
+    <div class="container bg-light mt-4">
+        {% for post in all_posts %}
+            {% if post in show_user.added_posts.all %}
+        <p class="fs-5 fw-bolder fst-italic mb-5">
+            {{post.posted_by.first_name}} {{post.posted_by.last_name}} wrote:
+            <br>
+            <span class="fw-normal fs-6 fst-normal">- {{post.message}} **</span>
+            <span class="fw-light fs-6 fst-normal text-success ms-5">{{post.created_at}}</span>
+        </p>
+            {% endif %}
+        {% endfor %}
 </html>

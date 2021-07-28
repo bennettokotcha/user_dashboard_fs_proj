@@ -65,5 +65,23 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = UserManager()
+    # added_posts = []
+    # posts_made = []
+    # comments_made = []
+
+class Post(models.Model):
+    added_to = models.ForeignKey(User, related_name='added_posts', on_delete=models.CASCADE, null=True)
+    posted_by = models.ForeignKey(User, related_name='posts_made', on_delete=models.CASCADE)
+    message = models.CharField(max_length=140)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # messages_made = []
+
+class Comment(models.Model):
+    comment = models.CharField(max_length=140)
+    posted_by = models.ForeignKey(User, related_name='comments_made', on_delete=models.CASCADE)
+    message = models.ForeignKey(Post, related_name='messages_made', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 # Create your models here.

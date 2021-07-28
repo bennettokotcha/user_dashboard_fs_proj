@@ -17,7 +17,9 @@ urlpatterns = [
     path('edit-i/<int:id>/proccess', views.edit_info_proccess),
     path('edit-p/<int:id>/proccess', views.edit_password_proccess),
     path('edit-d/<int:id>/proccess', views.edit_desc_proccess),
-    path('edit-user-i/<int:id>/process', views.edit_userinfo_proccess),
+    path('edit-user-i/<int:id>/process', views.edit_user_info),
+    path('edit-user-p/<int:id>/proccess', views.edit_user_password),
+    path('add-post/<int:id>', views.add_post_user),
     path('user/remove/<int:number>', views.remove_user),
     path('logout', views.logout),
 ]

@@ -29,21 +29,21 @@
     </nav>
     <div class="container d-flex justify-content-between mb-4">
         <h1 class="ms-4 p-4">Edit User: {{admin.id}}</h1>
-        <div class="btn btn-primary rounded mt-3" style="height: fit-content;">Return to Dashboard</div>
+        <a href="/dashboard/admin" role="button" class="btn btn-primary rounded mt-3" style="height: fit-content;">Return to Dashboard</a>
     </div>
         <div class="container  d-flex justify-content-around bg-light p-4">
-            <form class="border border-2 border-secondary rounded p-5" action="/edit-user-i/{{admin.id}}/process" method="POST">
+            <form class="border border-2 border-secondary rounded p-5" action="/edit-user-i/{{user.id}}/process" method="POST">
                 {% csrf_token %}
                 <h5 class="mb-5">Edit Information</h5>
                 <label for="first_name" class="form-label">First Name</label>
-                <input value='{{admin.first_name}}' class="form-control" type="text" name="first_name">
+                <input value='{{user.first_name}}' class="form-control" type="text" name="first_name">
     
                 <label for="last_name" class="form-label">Last Name</label>
-                <input value="{{admin.last_name}}" type="text" name="last_name" class="form-control" id="">
+                <input value="{{user.last_name}}" type="text" name="last_name" class="form-control" id="">
     
                 <label for="user_level" class="form-label">User-Level</label>
                 <select name="user_level" class="form-control">
-                    {% if admin.user_level is False %}
+                    {% if user.user_level is False %}
                     <option value='False'>Admin</option>
                     {% else %}
                     <option value="True">User</option>
@@ -53,21 +53,29 @@
                 </select>
 
                 <label for="email" class="form-label">Email</label>
-                <input value="{{admin.email}}" type="email" class="form-control" name="email" id="">
+                <input value="{{user.email}}" type="email" class="form-control" name="email" id="">
     
-                <button type="submit" class="mt-3 mb-5 btn-success text-center col-3 p-2 rounded">Save</button>
+                <button type="submit" class="mt-3 mb-5 btn-success text-center col-4 p-2 rounded">Save</button>
             </form>
             <img src="{% static 'edit_pic.webp' %}" class="img rounded mx-auto col-5" alt="clock'time for change'">
-            <form class="border border-2 border-secondary rounded p-5" action="#" method="POST">
+            <form class="border border-2 border-secondary rounded p-5" action="/edit-user-p/{{user.id}}/proccess" method="POST">
+                {% csrf_token %}
                 <h5 class="mb-5">Change Password</h5>
                 <label for="password" class="form-label">Password</label>
-                <input class="form-control" type="text" name="password">
+                <input class="form-control" type="password" name="password">
     
-                <label for="last_name" class="form-label">Password Confirmation</label>
-                <input type="text" name="last_name" class="form-control" id="">
+                <label for="confirm_pw" class="form-label">Password Confirmation</label>
+                <input type="password" name="confirm_pw" class="form-control" id="">
     
-                <div type="submit" class="mt-3 mb-5 btn-success col-10 text-center p-2 rounded">Update Password</div>
+                <button type="submit" class="mt-3 mb-5 btn-success col-10 text-center p-2 rounded">Update Password</button>
             </form>
         </div>
+        {% if messages %}
+        <ul class=''>
+            {% for message in messages %}
+            <li class='text-danger' {% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
 </body>
 </html>
