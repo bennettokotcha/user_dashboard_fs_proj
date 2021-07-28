@@ -77,7 +77,7 @@ def register_admin(request):
                 first_name=request.POST['first_name'], 
                 last_name=request.POST['last_name'],
                 email=request.POST['email'],
-                user_level=False,
+                user_level=True,
                 password=pw_hash,
                 confirm_pw=request.POST['confirm_pw']
                 )
@@ -236,9 +236,10 @@ def add_post_user(request, id):
 def remove_user(request, number):
     if request.method=='GET':
         user = User.objects.get(id=number)
-        user.delete()
+        if request.session['user_id'] == id or user.user_level is True:
+            user.delete()
+            return redirect('/dashboard/admin')
         return redirect('/dashboard/admin')
-    return redirect('/')
 
 def logout(request):
     request.session.flush()

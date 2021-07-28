@@ -30,12 +30,17 @@
         </div>
     </nav>
     <p class="container border border-1 border-success text-success p-2">
-        <span class="fw-bold">Manage users:</span>
-        <span class="fst-italic fw-lighter">(Only logged-in-Admin will render this page with a GET request.)</span> | 
+        <span class="fw-bold fs-5">Manage users:</span>
+        <span class="fst-italic fw-lighter">
+            (Only 'logged-in-Admin-user' will render this page with a GET request.
+            A 'logged_in-Normal-user' will render a different page entirely with
+            similar but different functionality!)
+        </span> | 
         On this page the Admin-user will be
         able to reach a page to edit (Normal-Users)
         Also, like Normal-users, Admin-user will be able to visit
-        the any users-post/comment-page. Admin can also edit themselves.
+        the any users-post/comment-page. Admin can also edit/delete
+        themselves as well as a 'Normal-user'.
         Admin can add a new-Normal-user upon creation with the
         ability to make them an admin user. An Admin cannot edit another admin.
     </p>
@@ -79,5 +84,4 @@
             </tbody>
         </table>
 </body>
-
 </html>

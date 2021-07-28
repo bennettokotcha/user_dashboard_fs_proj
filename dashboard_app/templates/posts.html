@@ -43,7 +43,7 @@
     
         <button type="submit" class="container mt-3 mb-5 btn-success text-center col-1 p-2 rounded me-5">Post</button>
     </form>
-    <div class="container bg-light mt-4">
+    <div class="container bg-light p-2 mt-4">
         {% for post in all_posts %}
             {% if post in show_user.added_posts.all %}
         <p class="fs-5 fw-bolder fst-italic mb-5">
